@@ -1,0 +1,8 @@
+/*Link Nome Usuario
+https://api.github.com/users/CaioBartholomeu
+
+/*Link Busca Usuario
+https://api.github.com/search/users?q=CaioBartholomeu
+
+/*Link Busca Repositorio
+https://api.github.com/search/repositories?q=GitHubBusca
