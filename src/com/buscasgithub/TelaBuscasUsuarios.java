@@ -7,22 +7,23 @@ import android.widget.TextView;
 
 public class TelaBuscasUsuarios extends Activity {
 
-	private TextView txtNome;
-	private TextView txtCpf;
-	private Pessoa pessoa;
+	private TextView txtLogin;
+	private TextView txtavatar_url;
+	private Usuario usuario;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_informacoes);
+		//setContentView(R.layout.activity_informacoes);
+		setContentView(R.layout.buscas_usuarios);
 		
-		pessoa = (Pessoa) getIntent().getSerializableExtra("pessoa");
+		usuario = (Usuario) getIntent().getSerializableExtra("usuario");
 		
-		txtNome = (TextView) findViewById(R.id.txtNome);
-		txtCpf = (TextView) findViewById(R.id.txtCpf);
+		txtLogin      = (TextView) findViewById(R.id.txtLogin);
+		txtavatar_url = (TextView) findViewById(R.id.txtAvatar);
 		
-		txtNome.setText(pessoa.getNome());
-		txtCpf.setText(pessoa.getCpf());
+		txtLogin.setText(usuario.getlogin());
+		txtavatar_url.setText(usuario.getavatar_url());
 
 	}
 

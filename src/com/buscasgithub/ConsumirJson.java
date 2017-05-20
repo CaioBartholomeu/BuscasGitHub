@@ -48,14 +48,14 @@ public class ConsumirJson extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 
-		Pessoa pessoa = (Pessoa) l.getAdapter().getItem(position);
+		Usuario usuario = (Usuario) l.getAdapter().getItem(position);
 
 		Intent intent = new Intent(this, TelaBuscasUsuarios.class);
-		intent.putExtra("pessoa", pessoa);
+		intent.putExtra("usuario", usuario);
 		startActivity(intent);
 	}
 
-	class DownloadJsonAsyncTask extends AsyncTask<String, Void, List<Pessoa>> {
+	class DownloadJsonAsyncTask extends AsyncTask<String, Void, List<Usuario>> {
 		ProgressDialog dialog;
 
 		//Exibe pop-up indicando que está sendo feito o download do JSON
@@ -66,9 +66,9 @@ public class ConsumirJson extends ListActivity {
 					"Fazendo download do JSON");
 		}
 
-		//Acessa o serviço do JSON e retorna a lista de pessoas
+		//Acessa o serviço do JSON e retorna a lista de usuario
 		@Override
-		protected List<Pessoa> doInBackground(String... params) {
+		protected List<Usuario> doInBackground(String... params) {
 			String urlString = params[0];
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpGet httpget = new HttpGet(urlString);
@@ -79,8 +79,8 @@ public class ConsumirJson extends ListActivity {
 					InputStream instream = entity.getContent();
 					String json = getStringFromInputStream(instream);
 					instream.close();
-					List<Pessoa> pessoas = getPessoas(json);
-					return pessoas;
+					List<Usuario> usuario = getUsuario(json);
+					return usuario;
 				}
 			} catch (Exception e) {
 				Log.e("Erro", "Falha ao acessar Web service", e);
@@ -91,11 +91,11 @@ public class ConsumirJson extends ListActivity {
 
 		//Depois de executada a chamada do serviço 
 		@Override
-		protected void onPostExecute(List<Pessoa> result) {
+		protected void onPostExecute(List<Usuario> result) {
 			super.onPostExecute(result);
 			dialog.dismiss();
 			if (result.size() > 0) {
-				ArrayAdapter<Pessoa> adapter = new ArrayAdapter<Pessoa>(
+				ArrayAdapter<Usuario> adapter = new ArrayAdapter<Usuario>(
 						ConsumirJson.this,
 						android.R.layout.simple_list_item_1, result);
 				setListAdapter(adapter);
@@ -110,12 +110,9 @@ public class ConsumirJson extends ListActivity {
 		}
 		
 		//Retorna uma lista de pessoas com as informações retornadas do JSON
-		private List<Pessoa> getPessoas(String jsonString) {
-			List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		private List<Usuario> getUsuario(String jsonString) {
+			List<Usuario> usuario = new ArrayList<Usuario>();
 			try {
-				//JSONArray pessoasJson = new JSONArray(jsonString);
-				//JSONObject pessoa;
-
 				JSONObject jsonObj = new JSONObject(jsonString);
                 JSONArray contacts = jsonObj.getJSONArray("items");
 				
@@ -123,13 +120,20 @@ public class ConsumirJson extends ListActivity {
 					
 					JSONObject c = contacts.getJSONObject(i); 
 					
-Log.d(ConsumirJson.LOG_TAG,"LOGIN HAHA= " + c.getString("login"));					                 
+Log.d(ConsumirJson.LOG_TAG,"LOGIN= "  + c.getString("login"));	
+Log.d(ConsumirJson.LOG_TAG,"AVATAR= " + c.getString("avatar_url"));	
+
+				Usuario objetoPessoa = new Usuario();
+				objetoPessoa.setlogin(c.getString("login"));
+				objetoPessoa.setavatar_url(c.getString("avatar_url"));
+				usuario.add(objetoPessoa);
+
 				}
 
 			} catch (JSONException e) {
 				Log.e("Erro", "Erro no parsing do JSON", e);
 			}
-			return pessoas;
+			return usuario;
 		}
 		
 

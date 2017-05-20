@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Informacoes</string>
+    <string name="app_name">Buscas GitHub</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    
-    <string name="nome">nome</string>
-    <string name="nascimento">data de nascimento</string>
-    <string name="cpf">CPF</string>
 
 </resources>

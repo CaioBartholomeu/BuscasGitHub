@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InformacoesActivity" />
+        <activity android:name=".TelaBuscasUsuarios" />
     </application>
 
 </manifest>
