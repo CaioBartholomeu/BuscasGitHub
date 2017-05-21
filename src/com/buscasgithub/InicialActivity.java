@@ -60,12 +60,14 @@ public class InicialActivity extends Activity {
 				}
 
 				finally {
+					
+					//Chamada activity HomeActivity
 					startActivity(new Intent(InicialActivity.this, HomeActivity.class));
-					//overridePendingTransition(R.anim.fade, R.anim.hold);
+					overridePendingTransition(R.anim.fade, R.anim.hold);
 				}
 			}
 		};
-
+        //Inicia a Thread para aguardar o tempo e chamar outro activity  
 		tempo.start();
 	}
 

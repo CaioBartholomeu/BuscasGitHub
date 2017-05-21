@@ -50,15 +50,19 @@ public class HomeActivity extends Activity {
 		
 		button1.setOnClickListener(new View.OnClickListener() {
 	        public void onClick(View v) {
+	        	
+	        	//Chamada activity BuscasUsuariosActivity
 	        	startActivity(new Intent(HomeActivity.this, BuscasUsuariosActivity.class));
-				//overridePendingTransition(R.anim.fade, R.anim.hold);
+				overridePendingTransition(R.anim.fade, R.anim.hold);
 	            }
 	        });	
 		
 		button2.setOnClickListener(new View.OnClickListener() {
 	        public void onClick(View v) {
+	        	
+	        	//Chamada activity BuscasRepositoriosActivity
 	        	startActivity(new Intent(HomeActivity.this, BuscasRepositoriosActivity.class));
-				//overridePendingTransition(R.anim.fade, R.anim.hold);
+				overridePendingTransition(R.anim.fade, R.anim.hold);
 	            }
 	        });	
 	}

@@ -35,9 +35,7 @@ import android.widget.TextView;
 
 
 public class BuscasRepositoriosActivity extends Activity {
-
 	private ListView listRepositorios;
-	List<String> opcoes;
 	static final String LOG_TAG = null;
 	
 	@Override
@@ -45,15 +43,16 @@ public class BuscasRepositoriosActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.buscas_repositorios);
 		
+		//Atrubuição de componentes da tela
 		final EditText editText = (EditText) findViewById(R.id.editBuscaRepositorios);
 		final Button button = (Button) findViewById(R.id.btnRepositorios);
 		listRepositorios = (ListView) findViewById(R.id.listBuscasRepositorios);
 
-		
+		//Realizar busca do conteúdo digitado
         button.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
-Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/repositories?q=" + editText.getText().toString());	
- 	
+
+        //Chamada objeto para realizar a busca e atribuição do conteúdo do Json
 		final ConsumirJsonRepositorios consumirJson = new ConsumirJsonRepositorios();
 		consumirJson.execute("https://api.github.com/search/repositories?q=" + editText.getText().toString());
 
@@ -65,16 +64,16 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/reposito
 		ProgressDialog dialog;
 		String jsonStringPrincipal;
 		
-		//Exibe pop-up indicando que está sendo feito o download do JSON
+		//Exibe pop-up da busca
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			  dialog = ProgressDialog.show(BuscasRepositoriosActivity.this, "Aguarde",
-              "Fazendo download do JSON");
+			  dialog = ProgressDialog.show(BuscasRepositoriosActivity.this, "Só um momento",
+              "Realizando a busca de repositórios");
 			
 		}
 
-		//Acessa o serviço do JSON e retorna a lista de usuario
+		//Acessa o serviço do JSON e retorna a lista de repositorio
 		@Override
 		protected List<Repositorio> doInBackground(String... params) {
 			String urlString = params[0];
@@ -103,6 +102,7 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/reposito
 			super.onPostExecute(result);
 			dialog.dismiss();
 			
+			//Se houver conteúdo, atribuir na lista
 			if (result.size() > 0) {
 				ArrayAdapter<Repositorio> adapter = new ArrayAdapter<Repositorio>(
 						 BuscasRepositoriosActivity.this,android.R.layout.simple_spinner_item, result);
@@ -111,27 +111,29 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/reposito
 			} else {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						BuscasRepositoriosActivity.this)
-						.setTitle("Erro")
-						.setMessage("Não foi possível acessar as informações!!")
-						.setPositiveButton("OK", null);
+						.setTitle(":(")
+						.setMessage("Nenhum repositório encontrado!")
+						.setPositiveButton("Buscar outros", null);
 				builder.create().show();
 				
 			}
 			
 		}
 		
- 	//Retorna uma lista de pessoas com as informações retornadas do JSON
+		//Retorna o Array com os objetos da busca
 		private List<Repositorio> getRepositorio(String jsonString) {
 			List<Repositorio> repositorios = new ArrayList<Repositorio>();
 			try {
-Log.d(BuscasRepositoriosActivity.LOG_TAG,"PASSO FINAL");					
+
+            //items: nome do array da API Json para busca de repositórios	
 			JSONObject jsonObj = new JSONObject(jsonString);
             JSONArray items = jsonObj.getJSONArray("items");
 			
-			for (int i = 0; i < items.length(); i++) {
-				
+            //Percorre todos os objetos e atribui para o objeto repositório
+			for (int i = 0; i < items.length(); i++) {	
 			JSONObject c = items.getJSONObject(i); 
 			
+			//name e html_url: objetos do array da API Json para busca de repositório
             Repositorio repositorio = new Repositorio();
             repositorio.setHtml_url(c.getString("html_url"));
             repositorio.setName(c.getString("name"));
@@ -144,7 +146,7 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"PASSO FINAL");
 			return repositorios;
 		}
 		
-		//Converte objeto InputStream para String
+		//Converter InputStream para String
 		private String getStringFromInputStream(InputStream is) {
 
 			BufferedReader br = null;

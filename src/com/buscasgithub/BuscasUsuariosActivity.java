@@ -35,12 +35,7 @@ import android.widget.TextView;
 
 
 public class BuscasUsuariosActivity extends Activity {
-
-	private TextView txtLogin;
-	private TextView txtAvatar_url;
-	private Usuario  objetoPessoa;
 	private ListView listUsuarios;
-	List<String> opcoes;
 	static final String LOG_TAG = null;
 	
 	@Override
@@ -48,15 +43,16 @@ public class BuscasUsuariosActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.buscas_usuarios);
 		
+		//Atrubuição de componentes da tela
 		final EditText editText = (EditText) findViewById(R.id.editBuscaUsuarios);
 		final Button button = (Button) findViewById(R.id.btnUsuarios);
         listUsuarios = (ListView) findViewById(R.id.listBuscaUsuarios);
 
-		
+		//Realizar busca do conteúdo digitado
         button.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
-Log.d(BuscasUsuariosActivity.LOG_TAG,"https://api.github.com/search/users?q=" + editText.getText().toString());	
- 	
+        
+        //Chamada objeto para realizar a busca e atribuição do conteúdo do Json
 		final ConsumirJsonUsuarios consumirJson = new ConsumirJsonUsuarios();
 		consumirJson.execute("https://api.github.com/search/users?q=" + editText.getText().toString());
 
@@ -66,16 +62,17 @@ Log.d(BuscasUsuariosActivity.LOG_TAG,"https://api.github.com/search/users?q=" + 
 			     
 	}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	class ConsumirJsonUsuarios extends AsyncTask<String, Void, List<Usuario>> {	
 		ProgressDialog dialog;
 		String jsonStringPrincipal;
 		
-		//Exibe pop-up indicando que está sendo feito o download do JSON
+		//Exibe pop-up da busca
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			  dialog = ProgressDialog.show(BuscasUsuariosActivity.this, "Aguarde",
-              "Fazendo download do JSON");
+			  dialog = ProgressDialog.show(BuscasUsuariosActivity.this, "Só um momento",
+              "Realizando a busca de usuários");
 			
 		}
 
@@ -108,6 +105,7 @@ Log.d(BuscasUsuariosActivity.LOG_TAG,"https://api.github.com/search/users?q=" + 
 			super.onPostExecute(result);
 			dialog.dismiss();
 			
+			//Se houver conteúdo, atribuir na lista
 			if (result.size() > 0) {
 				ArrayAdapter<Usuario> adapter = new ArrayAdapter<Usuario>(
 						 BuscasUsuariosActivity.this,android.R.layout.simple_list_item_multiple_choice, result);
@@ -116,30 +114,29 @@ Log.d(BuscasUsuariosActivity.LOG_TAG,"https://api.github.com/search/users?q=" + 
 			} else {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						BuscasUsuariosActivity.this)
-						.setTitle("Erro")
-						.setMessage("Não foi possível acessar as informações!!")
-						.setPositiveButton("OK", null);
+						.setTitle(":(")
+						.setMessage("Nenhum usuário encontrado!")
+						.setPositiveButton("Buscar outros", null);
 				builder.create().show();
 				
 			}
 			
 		}
 		
- 	//Retorna uma lista de pessoas com as informações retornadas do JSON
+ 	    //Retorna o Array com os objetos da busca
 		private List<Usuario> getUsuario(String jsonString) {
 			List<Usuario> usuarios = new ArrayList<Usuario>();
 			try {
-Log.d(BuscasUsuariosActivity.LOG_TAG,"PASSO FINAL");					
+			
+			//items: nome do array da API Json para busca de usuários	
 			JSONObject jsonObj = new JSONObject(jsonString);
             JSONArray items = jsonObj.getJSONArray("items");
 			
-			for (int i = 0; i < items.length(); i++) {
-				
+            //Percorre todos os objetos e atribui para o objeto usuario
+			for (int i = 0; i < items.length(); i++) {				
 			JSONObject c = items.getJSONObject(i); 
-				
-Log.d(BuscasUsuariosActivity.LOG_TAG,"LOGIN FINAL uhu= "  + c.getString("login"));	
-Log.d(BuscasUsuariosActivity.LOG_TAG,"AVATAR FINAL uhu= " + c.getString("avatar_url"));	
 
+			//login e avatar_url: objetos do array da API Json para busca de usuários
             Usuario usuario = new Usuario();
             usuario.setlogin(c.getString("login"));
             usuario.setavatar_url(c.getString("avatar_url"));
@@ -152,11 +149,11 @@ Log.d(BuscasUsuariosActivity.LOG_TAG,"AVATAR FINAL uhu= " + c.getString("avatar_
 			return usuarios;
 		}
 		
-		//Converte objeto InputStream para String
+		//Converter InputStream para String
 		private String getStringFromInputStream(InputStream is) {
 
 			BufferedReader br = null;
-			StringBuilder sb = new StringBuilder();
+			StringBuilder  sb = new StringBuilder();
 
 			String line;
 			try {
