@@ -5,32 +5,31 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/txtDescricaoUsuarios"
+        android:id="@+id/txtDescricaoRepositorios"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/DescricaoUsuarios" />
+        android:text="@string/DescricaoRepositorios" />
 
     <EditText
-        android:id="@+id/editBuscaUsuarios"
+        android:id="@+id/editBuscaRepositorios"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:text="@string/txtBusca" >
+        android:text="@string/txtRepositorios" >
 
         <requestFocus />
     </EditText>
 
     <Button
-        android:id="@+id/btnUsuarios"
+        android:id="@+id/btnRepositorios"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/BuscarUsuario" />
+        android:text="@string/BuscarRepositorio" />
 
     <ListView
-        android:id="@+id/listBuscaUsuarios"
+        android:id="@+id/listBuscasRepositorios"
         android:layout_width="match_parent"
-        android:layout_height="0dp" 
-        android:layout_weight="1" >
+        android:layout_height="wrap_content" >
     </ListView>
 
 </LinearLayout>

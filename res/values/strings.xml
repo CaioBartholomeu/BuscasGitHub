@@ -3,5 +3,11 @@
 
     <string name="app_name">Buscas GitHub</string>
     <string name="action_settings">Settings</string>
+    <string name="txtBusca">CaioBartholomeu</string>
+    <string name="BuscarUsuario">Buscar Usuários</string>
+    <string name="DescricaoUsuarios">Digite para buscar algum usuário:</string>
+    <string name="DescricaoRepositorios">Digite para buscar algum repositório</string>
+    <string name="BuscarRepositorio">Buscar Repositórios</string>
+    <string name="txtRepositorios">BuscasGitHub</string>
 
 </resources>
