@@ -36,10 +36,7 @@ import android.widget.TextView;
 
 public class BuscasRepositoriosActivity extends Activity {
 
-	private TextView txtLogin;
-	private TextView txtAvatar_url;
-	private Usuario  objetoPessoa;
-	private ListView listUsuarios;
+	private ListView listRepositorios;
 	List<String> opcoes;
 	static final String LOG_TAG = null;
 	
@@ -50,21 +47,21 @@ public class BuscasRepositoriosActivity extends Activity {
 		
 		final EditText editText = (EditText) findViewById(R.id.editBuscaRepositorios);
 		final Button button = (Button) findViewById(R.id.btnRepositorios);
-        listUsuarios = (ListView) findViewById(R.id.listBuscasRepositorios);
+		listRepositorios = (ListView) findViewById(R.id.listBuscasRepositorios);
 
 		
         button.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
 Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/repositories?q=" + editText.getText().toString());	
  	
-		final ConsumirJsonUsuarios consumirJson = new ConsumirJsonUsuarios();
+		final ConsumirJsonRepositorios consumirJson = new ConsumirJsonRepositorios();
 		consumirJson.execute("https://api.github.com/search/repositories?q=" + editText.getText().toString());
 
             }
         });			     
 	}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	class ConsumirJsonUsuarios extends AsyncTask<String, Void, List<Usuario>> {	
+	class ConsumirJsonRepositorios extends AsyncTask<String, Void, List<Repositorio>> {	
 		ProgressDialog dialog;
 		String jsonStringPrincipal;
 		
@@ -79,7 +76,7 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/reposito
 
 		//Acessa o serviço do JSON e retorna a lista de usuario
 		@Override
-		protected List<Usuario> doInBackground(String... params) {
+		protected List<Repositorio> doInBackground(String... params) {
 			String urlString = params[0];
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpGet httpget = new HttpGet(urlString);
@@ -90,8 +87,8 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/reposito
 					InputStream instream = entity.getContent();
 					String json = getStringFromInputStream(instream);
 					instream.close();
-					List<Usuario> usuario = getUsuario(json);					
-					return usuario;
+					List<Repositorio> repositorio = getRepositorio(json);					
+					return repositorio;
 				}
 			} catch (Exception e) {
 				Log.e("Erro", "Falha ao acessar Web service", e);
@@ -102,14 +99,14 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/reposito
 
 		//Depois de executada a chamada do serviço 
 		@Override
-		protected void onPostExecute(List<Usuario> result) {
+		protected void onPostExecute(List<Repositorio> result) {
 			super.onPostExecute(result);
 			dialog.dismiss();
 			
 			if (result.size() > 0) {
-				ArrayAdapter<Usuario> adapter = new ArrayAdapter<Usuario>(
-						 BuscasRepositoriosActivity.this,android.R.layout.simple_list_item_multiple_choice, result);
-				listUsuarios.setAdapter(adapter);
+				ArrayAdapter<Repositorio> adapter = new ArrayAdapter<Repositorio>(
+						 BuscasRepositoriosActivity.this,android.R.layout.simple_spinner_item, result);
+				listRepositorios.setAdapter(adapter);
 					
 			} else {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -124,8 +121,8 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"https://api.github.com/search/reposito
 		}
 		
  	//Retorna uma lista de pessoas com as informações retornadas do JSON
-		private List<Usuario> getUsuario(String jsonString) {
-			List<Usuario> usuarios = new ArrayList<Usuario>();
+		private List<Repositorio> getRepositorio(String jsonString) {
+			List<Repositorio> repositorios = new ArrayList<Repositorio>();
 			try {
 Log.d(BuscasRepositoriosActivity.LOG_TAG,"PASSO FINAL");					
 			JSONObject jsonObj = new JSONObject(jsonString);
@@ -134,20 +131,17 @@ Log.d(BuscasRepositoriosActivity.LOG_TAG,"PASSO FINAL");
 			for (int i = 0; i < items.length(); i++) {
 				
 			JSONObject c = items.getJSONObject(i); 
-				
-Log.d(BuscasRepositoriosActivity.LOG_TAG,"LOGIN FINAL uhu= "  + c.getString("login"));	
-Log.d(BuscasRepositoriosActivity.LOG_TAG,"AVATAR FINAL uhu= " + c.getString("avatar_url"));	
-
-            Usuario usuario = new Usuario();
-            usuario.setlogin(c.getString("login"));
-            usuario.setavatar_url(c.getString("avatar_url"));
-			usuarios.add(usuario);				
+			
+            Repositorio repositorio = new Repositorio();
+            repositorio.setHtml_url(c.getString("html_url"));
+            repositorio.setName(c.getString("name"));
+            repositorios.add(repositorio);				
 				}
 
 			} catch (JSONException e) {
 				Log.e("Erro", "Erro no parsing do JSON", e);
 			}
-			return usuarios;
+			return repositorios;
 		}
 		
 		//Converte objeto InputStream para String
