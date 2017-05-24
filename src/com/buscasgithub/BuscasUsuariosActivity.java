@@ -19,7 +19,9 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,10 +54,23 @@ public class BuscasUsuariosActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
         
+        	
+        //Verificacao da internet 
+        if (testarConexao() == true) {
         //Chamada objeto para realizar a busca e atribuição do conteúdo do Json
 		final ConsumirJsonUsuarios consumirJson = new ConsumirJsonUsuarios();
 		consumirJson.execute("https://api.github.com/search/users?q=" + editText.getText().toString());
-
+            }
+            else
+            {
+              AlertDialog.Builder builder = new AlertDialog.Builder(
+    					BuscasUsuariosActivity.this)
+    					.setTitle(":(")
+    					.setMessage("Sem internet!")
+    					.setPositiveButton("Tente mais tarde", null);
+    		  builder.create().show();	
+    		 
+            }
             }
         });	
 
@@ -180,4 +195,14 @@ public class BuscasUsuariosActivity extends Activity {
 		}
 
 	}
+	
+	public boolean testarConexao(){
+    	ConnectivityManager cm = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE); 
+                if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isAvailable() && cm.getActiveNetworkInfo().isConnected()) { 
+                    return true; 
+                } else { 
+                    return false; 
+                }  
+}
 }

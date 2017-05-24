@@ -19,7 +19,9 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,11 +53,24 @@ public class BuscasRepositoriosActivity extends Activity {
 		//Realizar busca do conteúdo digitado
         button.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
-
-        //Chamada objeto para realizar a busca e atribuição do conteúdo do Json
-		final ConsumirJsonRepositorios consumirJson = new ConsumirJsonRepositorios();
-		consumirJson.execute("https://api.github.com/search/repositories?q=" + editText.getText().toString());
-
+       
+ Log.d(BuscasRepositoriosActivity.LOG_TAG,"PARTE0");
+        //Verificacao da internet 
+        if (testarConexao() == true) {
+          //Chamada objeto para realizar a busca e atribuição do conteúdo do Json
+          final ConsumirJsonRepositorios consumirJson = new ConsumirJsonRepositorios();
+		  consumirJson.execute("https://api.github.com/search/repositories?q=" + editText.getText().toString());
+        }
+        else
+        {
+          AlertDialog.Builder builder = new AlertDialog.Builder(
+					BuscasRepositoriosActivity.this)
+					.setTitle(":(")
+					.setMessage("Sem internet!")
+					.setPositiveButton("Tente mais tarde", null);
+		  builder.create().show();	
+		 
+        }
             }
         });			     
 	}
@@ -177,4 +192,15 @@ public class BuscasRepositoriosActivity extends Activity {
 		}
 
 	}
+	
+	public boolean testarConexao(){
+    	ConnectivityManager cm = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE); 
+                if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isAvailable() && cm.getActiveNetworkInfo().isConnected()) { 
+                    return true; 
+                } else { 
+                    return false; 
+                }  
+}
+	
 }
