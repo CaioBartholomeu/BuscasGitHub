@@ -48,6 +48,15 @@ public class HomeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 
+		//trava layout retrato
+		try {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		final Button button1 = (Button) findViewById(R.id.button1);
 		final Button button2 = (Button) findViewById(R.id.button2);
 		

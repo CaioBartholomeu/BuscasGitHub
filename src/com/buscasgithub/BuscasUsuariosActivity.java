@@ -21,11 +21,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewDebug.IntToString;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -45,6 +48,15 @@ public class BuscasUsuariosActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.buscas_usuarios);
 		
+		//trava layout retrato
+		try {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		//Atrubuição de componentes da tela
 		final EditText editText = (EditText) findViewById(R.id.editBuscaUsuarios);
 		final Button button = (Button) findViewById(R.id.btnUsuarios);
@@ -60,7 +72,12 @@ public class BuscasUsuariosActivity extends Activity {
         //Chamada objeto para realizar a busca e atribuição do conteúdo do Json
 		final ConsumirJsonUsuarios consumirJson = new ConsumirJsonUsuarios();
 		consumirJson.execute("https://api.github.com/search/users?q=" + editText.getText().toString());
-            }
+        
+		//esconder teclado
+	    ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+				 editText.getWindowToken(), 0);
+        
+        }
             else
             {
               AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -123,7 +140,7 @@ public class BuscasUsuariosActivity extends Activity {
 			//Se houver conteúdo, atribuir na lista
 			if (result.size() > 0) {
 				ArrayAdapter<Usuario> adapter = new ArrayAdapter<Usuario>(
-						 BuscasUsuariosActivity.this,android.R.layout.simple_list_item_multiple_choice, result);
+						 BuscasUsuariosActivity.this,android.R.layout.simple_spinner_item, result);
 				listUsuarios.setAdapter(adapter);
 					
 			} else {

@@ -21,12 +21,15 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.ViewDebug.IntToString;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +48,15 @@ public class BuscasRepositoriosActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.buscas_repositorios);
 		
+		//trava layout retrato
+		try {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		//Atrubuição de componentes da tela
 		final EditText editText = (EditText) findViewById(R.id.editBuscaRepositorios);
 		final Button button = (Button) findViewById(R.id.btnRepositorios);
@@ -59,7 +71,12 @@ public class BuscasRepositoriosActivity extends Activity {
         if (testarConexao() == true) {
           //Chamada objeto para realizar a busca e atribuição do conteúdo do Json
           final ConsumirJsonRepositorios consumirJson = new ConsumirJsonRepositorios();
-		  consumirJson.execute("https://api.github.com/search/repositories?q=" + editText.getText().toString());
+		  consumirJson.execute("https://api.github.com/search/repositories?q=" + editText.getText().toString());		 
+          
+		  //esconder teclado
+		  ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+					 editText.getWindowToken(), 0);
+        
         }
         else
         {
